@@ -68,7 +68,11 @@ else
   exit 1
 fi
 
-pelican -d -o $BUILD_DIR/public -s $CONFIG_FILE $BUILD_DIR/content | indent
+pelican --debug \
+  --delete-output-directory \
+  --output $BUILD_DIR/public \
+  --settings $CONFIG_FILE \
+  $BUILD_DIR/content | indent
 
 puts-step "Installing nginx ($NGINX_VERSION)"
 if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
@@ -81,8 +85,8 @@ if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
     --without-http_rewrite_module \
     --without-http_gzip_module \
     --without-http_proxy_module \
-    --with-http_gzip_static_module &> /dev/null
-  make -j2 &> /dev/null
+    --with-http_gzip_static_module
+  make -j2
 fi
 
 cd $CACHE_DIR/$NGINX_VERSION
